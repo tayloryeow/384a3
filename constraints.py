@@ -104,24 +104,35 @@ class QueensConstraint(Constraint):
         return False
 
 class QueensTableConstraint(TableConstraint):
-
-    '''Queens constraint between queen in row i and row j, but
-       using a table constraint instead. That is, you
-       have to create and add the satisfying tuples.
-
-       Since we inherit from TableConstraint, we can
-       call TableConstraint.__init__(self,...)
-       to set up the constraint.
-
-       Then we get hasSupport and check automatically from
-       TableConstraint
-    '''
+    #Queens constraint between queen in row i and row j, but
+    #  using a table constraint instead. That is, you
+    #  have to create and add the satisfying tuples.
+    #
+    #  Since we inherit from TableConstraint, we can
+    #  call TableConstraint.__init__(self,...)
+    #  to set up the constraint.
+    #
+    #  Then we get hasSupport and check automatically from
+    #  TableConstraint
+    #  
     #your implementation for Question 1 goes
     #inside of this class body. You must not change
     #the existing function signatures.
+    #####################################
+    def diag(self, row1, row2, i1, i2):
+        return abs(row1 - row2) == abs(i1 - i2)
+
     def __init__(self, name, qi, qj, i, j):
-        self._name = "Queen_" + name
-        util.raiseNotDefined()
+        scope = [qi,qj]
+        self._name = name
+
+        n = range(0,qi.domainSize())
+
+        satArgs = [[x,y] for x in qi.curDomain() for y in qj.curDomain() if x != y and not self.diag(i,j,x,y)]
+
+        TableConstraint.__init__(self, name, scope, satArgs)
+        
+
 
 class NeqConstraint(Constraint):
     '''Neq constraint between two variables'''
