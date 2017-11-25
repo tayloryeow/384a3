@@ -652,7 +652,6 @@ def question_5():
 
     if fails[1]:
         print "\nFail Q5 test 2\nErrors were generated on the following code:"
-        print test3
     else:
         print "Pass Q5 test 2"
         print_sep()

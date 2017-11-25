@@ -250,7 +250,6 @@ def findvals(remainingVars, assignment, finalTestfn, partialTestfn=lambda x: Tru
     remainingVars.append(var)
     return False
 
-
 class NValuesConstraint(Constraint):
     '''NValues constraint over a set of variables.
        Among the variables in the constraint's scope the number that
@@ -262,7 +261,6 @@ class NValuesConstraint(Constraint):
        will only be satisfied by assignments such that at least 2 the V1, V2, V3, V4
        are assigned the value 3, and at most 3 of them have been assigned the value 3
        '''
-
     #Question 5 you have to complete the implementation of
     #check() and hasSupport. You can change __init__ if you want
     #but do not change its parameters.
@@ -275,7 +273,14 @@ class NValuesConstraint(Constraint):
         self._ub = upper_bound
 
     def check(self):
-        util.raiseNotDefined()
+        passing = 0
+        for v in self.scope():
+            if v.getValue() == self._required:
+                passing+=1
+            else:
+                return True
+        return self._lb <= passing and passing <= self._ub
+
 
     def hasSupport(self, var, val):
         '''check if var=val has an extension to an assignment of the
@@ -285,4 +290,27 @@ class NValuesConstraint(Constraint):
                  a similar approach is applicable here (but of course
                  there are other ways as well)
         '''
-        util.raiseNotDefined()
+        if var not in self.scope():
+            return True   #var=val has support on any constraint it does not participate in
+
+        def NValuesComplete(l):
+            vals = [val for (var, val) in l if var.getValue() == self._required]
+            print "Nvalues completel"
+            print vals
+            print "->", self._lb, len(vals), self._ub
+            return self._lb <= len(vals) and len(vals) <= self._ub
+
+        def NValuesPartial(l):
+            print "Nvales partial"
+            print self._lb, self._ub, self._required
+
+            vals = [val for val in l if val == self._required]
+            print "val",val
+            print self._lb, len(vals), self._ub
+            print  len(vals) <= self._ub
+            return len(vals) <= self._ub
+        varsToAssign = self.scope()
+        varsToAssign.remove(var)
+        x = findvals(varsToAssign, [(var, val)], NValuesComplete, NValuesPartial)
+        return x
+

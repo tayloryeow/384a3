@@ -1,0 +1,50 @@
+------------------------------------------------
+Q5. NValues Constraint implementation (4 points)
+------------------------------------------------
+Error: V1.curDomain() == []
+Correct curDomin should be == [1, 2]
+Error: V6.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+Error: V7.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+Error: V8.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+Error: V9.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+
+Fail Q5 test 1
+Errors were generated on the following code:
+    v1 = Variable('V1', [1, 2])
+    v2 = Variable('V2', [1, 2])
+    v3 = Variable('V3', [1, 2, 3, 4, 5])
+    v4 = Variable('V4', [1, 2, 3, 4, 5])
+    v5 = Variable('V5', [1, 2, 3, 4, 5])
+    v6 = Variable('V6', [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    v7 = Variable('V7', [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    v8 = Variable('V8', [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    v9 = Variable('V9', [1, 2, 3, 4, 5, 6, 7, 8, 9])
+    vars = [v1, v2, v3, v4, v5, v6, v7, v8, v9]
+    nv9 = NValuesConstraint('9', vars, 9, 4, 5)
+    testcsp = CSP('test', vars, [nv9])
+    GacEnforce([nv9], testcsp, None, None)
+Error: V1.curDomain() == []
+Correct curDomin should be == [1]
+Error: V2.curDomain() == [1, 2]
+Correct curDomin should be == [1]
+Error: V3.curDomain() == [1, 2, 3, 4, 5]
+Correct curDomin should be == [1]
+Error: V4.curDomain() == [1, 2, 3, 4, 5]
+Correct curDomin should be == [1]
+Error: V5.curDomain() == [1, 2, 3, 4, 5]
+Correct curDomin should be == [1]
+Error: V6.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+Error: V7.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+Error: V8.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+Error: V9.curDomain() == [1, 2, 3, 4, 5, 6, 7, 8, 9]
+Correct curDomin should be == [9]
+
+Fail Q5 test 2
+Errors were generated on the following code:
