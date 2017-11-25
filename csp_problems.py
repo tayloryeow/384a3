@@ -53,7 +53,7 @@ def solve_nQueens(n, algo, allsolns, tableCnstr=False, variableHeuristic='fixed'
                print "{} = {}, ".format(var.name(),val),
            print ""
 
-def sudokuCSP(initial_sudoku_board, model='neq'):
+def sudokuCSP(initial_sudoku_board, model='alldiff'):
     '''The input board is specified as a list of 9 lists. Each of the
        9 lists represents a row of the board. If a 0 is in the list it
        represents an empty cell. Otherwise if a number between 1--9 is
@@ -104,6 +104,7 @@ def sudokuCSP(initial_sudoku_board, model='neq'):
     if not model in ['neq', 'alldiff']:
         print "Error wrong sudoku model specified {}. Must be one of {}".format(
             model, ['neq', 'alldiff'])
+    print "model:", model
 
     #first define the variables
     i = 0
@@ -126,18 +127,20 @@ def sudokuCSP(initial_sudoku_board, model='neq'):
     #row constraints
     constraint_list = []
 
+    i = 0
     for row in var_array:
         if model == 'neq':
             constraint_list.extend(post_all_pairs(row))
         elif model == 'alldiff':
-            util.raiseNotDefined()
+            constraint_list.append(AllDiffConstraint("Row{}".format(i), row))
+            i+=1
 
     for colj in range(len(var_array[0])):
         scope = map(lambda row: row[colj], var_array)
         if model == 'neq':
             constraint_list.extend(post_all_pairs(scope))
         elif model == 'alldiff':
-            util.raiseNotDefined()
+            constraint_list.append(AllDiffConstraint("Col{}".format(colj), scope))
 
     for i in [0, 3, 6]:
         for j in [0, 3, 6]:
@@ -149,7 +152,9 @@ def sudokuCSP(initial_sudoku_board, model='neq'):
             if model == 'neq':
                 constraint_list.extend(post_all_pairs(scope))
             elif model == 'alldiff':
-                util.raiseNotDefined()
+                constraint_list.append(AllDiffConstraint("Square{}by{}".format(i/3, j/3), scope)) 
+    for i in constraint_list:
+        print i
 
     vars = [var for row in var_array for var in row]
     return CSP("Sudoku", vars, constraint_list)
