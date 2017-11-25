@@ -1,5 +1,6 @@
 from csp import Constraint, Variable
 import util
+import pdb
 
 class TableConstraint(Constraint):
     '''General type of constraint that can be use to implement any type of
@@ -275,8 +276,8 @@ class NValuesConstraint(Constraint):
     def check(self):
         passing = 0
         for v in self.scope():
-            if v.getValue() == self._required:
-                passing+=1
+            if v.isAssigned() and v.getValue() == self._required:
+                passing += 1
             else:
                 return True
         return self._lb <= passing and passing <= self._ub
@@ -294,21 +295,20 @@ class NValuesConstraint(Constraint):
             return True   #var=val has support on any constraint it does not participate in
 
         def NValuesComplete(l):
-            vals = [val for (var, val) in l if var.getValue() == self._required]
-            print "Nvalues completel"
-            print vals
-            print "->", self._lb, len(vals), self._ub
-            return self._lb <= len(vals) and len(vals) <= self._ub
+            numVals = 0
+            for (var, val) in l:
+                if val == self._required:
+                    numVals += 1
+            return (self._lb <= numVals) and (numVals <= self._ub)
 
         def NValuesPartial(l):
-            print "Nvales partial"
-            print self._lb, self._ub, self._required
+            numVals = 0
 
-            vals = [val for val in l if val == self._required]
-            print "val",val
-            print self._lb, len(vals), self._ub
-            print  len(vals) <= self._ub
-            return len(vals) <= self._ub
+            for (var, val) in l:
+                if val == self._required:
+                    numVals += 1
+            return numVals <= self._ub
+
         varsToAssign = self.scope()
         varsToAssign.remove(var)
         x = findvals(varsToAssign, [(var, val)], NValuesComplete, NValuesPartial)

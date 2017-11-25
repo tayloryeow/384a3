@@ -53,7 +53,7 @@ def solve_nQueens(n, algo, allsolns, tableCnstr=False, variableHeuristic='fixed'
                print "{} = {}, ".format(var.name(),val),
            print ""
 
-def sudokuCSP(initial_sudoku_board, model='alldiff'):
+def sudokuCSP(initial_sudoku_board, model='neq'):
     '''The input board is specified as a list of 9 lists. Each of the
        9 lists represents a row of the board. If a 0 is in the list it
        represents an empty cell. Otherwise if a number between 1--9 is
@@ -104,8 +104,6 @@ def sudokuCSP(initial_sudoku_board, model='alldiff'):
     if not model in ['neq', 'alldiff']:
         print "Error wrong sudoku model specified {}. Must be one of {}".format(
             model, ['neq', 'alldiff'])
-    print "model:", model
-
     #first define the variables
     i = 0
     var_array = []
@@ -152,9 +150,7 @@ def sudokuCSP(initial_sudoku_board, model='alldiff'):
             if model == 'neq':
                 constraint_list.extend(post_all_pairs(scope))
             elif model == 'alldiff':
-                constraint_list.append(AllDiffConstraint("Square{}by{}".format(i/3, j/3), scope)) 
-    for i in constraint_list:
-        print i
+                constraint_list.append(AllDiffConstraint("Square{}by{}".format(i/3, j/3), scope))
 
     vars = [var for row in var_array for var in row]
     return CSP("Sudoku", vars, constraint_list)

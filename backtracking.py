@@ -174,37 +174,32 @@ def FC(unAssignedVars, csp, allSolutions, trace):
     #you must not change the function parameters.
     #Implementing handling of the trace parameter is optional
     #but it can be useful for debugging
-   
-
     if unAssignedVars.empty():
-        if trace: print "{} Solution Found".format(csp.name())
         soln = []
         for v in csp.variables():
             soln.append((v, v.getValue()))
-        return [soln]  #each call returns a list of solutions found
-    bt_search.nodesExplored += 1
+        return [soln]
+
+    var = unAssignedVars.extract()
     solns = []         #so far we have no solutions recursive calls
-    nxtvar = unAssignedVars.extract()
-    if trace: print "==>Trying {}".format(nxtvar.name())
-    for val in nxtvar.domain():
-        if trace: print "==> {} = {}".format(nxtvar.name(), val)
-        nxtvar.setValue(val)
-        constraintsOK = True
-        for cnstr in csp.constraintsOf(nxtvar):
-            if cnstr.numUnassigned() == 0:
-                if not cnstr.check():
-                    constraintsOK = False
-                    if trace: print "<==falsified constraint\n"
+    for val in var.curDomain():
+        var.setValue(val)
+        noDWO = True
+        for constraint in csp.constraintsOf(var):
+            if constraint.numUnassigned()==1:
+                if FCCheck(constraint, var, val) == "DWO":
+                    noDWO = False
                     break
-        if constraintsOK:
-            new_solns = BT(unAssignedVars, csp, allSolutions, trace)
+        if noDWO:
+            new_solns = FC(unAssignedVars, csp, allSolutions, trace)
             if new_solns:
                 solns.extend(new_solns)
             if len(solns) > 0 and not allSolutions:
-                break #don't bother with other values of nxtvar
-                      #as we found a soln.
-    nxtvar.unAssign()
-    unAssignedVars.insert(nxtvar)
+                var.restoreValues(var, val)
+                break
+        var.restoreValues(var, val)
+    var.setValue(None)
+    unAssignedVars.insert(var)
     return solns
 
 def GacEnforce(constraints, csp, reasonVar, reasonVal):
